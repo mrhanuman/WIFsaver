@@ -3,24 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black"
     tools:context=".FullViewItem">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:visibility="visible"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <VideoView
-            android:id="@+id/videoView"
-            android:layout_margin="16dp"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:visibility="visible" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                app:cardCornerRadius="50dp"
+                android:layout_margin="8dp">
+
+            <ImageView
+                android:id="@+id/bt_download_full"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                app:tint="@color/black"
+                android:src="@drawable/download"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:cardCornerRadius="50dp"
+                android:layout_margin="8dp">
+
+
+
+            <ImageView
+                android:id="@+id/bt_share"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="4dp"
+                android:layout_gravity="center"
+                android:src="@drawable/share"/>
+        </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

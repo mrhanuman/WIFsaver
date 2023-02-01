@@ -19,6 +19,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rvStatusList: RecyclerView
     private lateinit var statusList: ArrayList<WhatsAppModel>
     private lateinit var statusAdapter: WhatsAppAdapter
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,39 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.title = "All Status"
         rvStatusList = findViewById(R.id.recycler_view)
         statusList = ArrayList()
+        swipeRefreshLayout = findViewById(R.id.container)
+
+        swipeRefreshLayout.setOnRefreshListener {
+
+            swipeRefreshLayout.isRefreshing = true
+
+            val sh = getSharedPreferences("DATA_PATH", MODE_PRIVATE)
+            val uriPath = sh.getString("PATH", "")
+
+            contentResolver.takePersistableUriPermission(
+                Uri.parse(uriPath),
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+
+            if (uriPath != null) {
+                val docFile = DocumentFile.fromTreeUri(applicationContext, Uri.parse(uriPath))
+                statusList.clear()
+                for (file: DocumentFile in docFile!!.listFiles()) {
+
+                    if (!file.name!!.endsWith(".nomedia")) {
+                        val modelClass = WhatsAppModel(file.name!!, file.uri.toString())
+                        statusList.add(modelClass)
+
+                    }
+                }
+                setupRecyclerView(statusList)
+            }
+            swipeRefreshLayout.isRefreshing = false
+            Toast.makeText(this, "status updated ", Toast.LENGTH_SHORT).show()
+
+
+
+        }
 
 
         val result = readDataFromPrefs()
@@ -146,6 +181,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun listItemClicked(status: WhatsAppModel) {
 
 
@@ -160,6 +196,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun saveFile(status: WhatsAppModel) {
         if (status.fileUri.endsWith(".mp4")) {
             val inputStream = contentResolver.openInputStream(Uri.parse(status.fileUri))
@@ -173,7 +210,8 @@ class MainActivity : AppCompatActivity() {
                 value.put(MediaStore.MediaColumns.MIME_TYPE, "videos/mp4")
                 value.put(
                     MediaStore.MediaColumns.RELATIVE_PATH,
-                    Environment.DIRECTORY_DOCUMENTS + "/videos/")
+                    Environment.DIRECTORY_DOCUMENTS + "/videos/"
+                )
 
                 val uri = contentResolver.insert(MediaStore.Files.getContentUri("external"), value)
                 val outputStream: OutputStream = uri?.let { contentResolver.openOutputStream(it) }!!
@@ -198,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                         put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
                         put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                     }
-                    val imageUri: Uri ?=
+                    val imageUri: Uri? =
                         resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
                     fos = imageUri?.let {
                         resolver.openOutputStream(it)
@@ -208,7 +246,8 @@ class MainActivity : AppCompatActivity() {
 
 
             } else {
-                val imageDir =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                val imageDir =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 val image = File(imageDir, fileName)
                 fos = FileOutputStream(image)
             }

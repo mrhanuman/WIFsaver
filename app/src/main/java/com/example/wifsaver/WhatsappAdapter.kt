@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -46,7 +45,7 @@ class WhatsAppAdapter(private val context: Context, private var modelClass: Arra
             holder.cvVideoCard.visibility = View.GONE
             holder.ivVideoIcon.visibility = View.GONE
         }
-       val gh = Glide.with(context).load(Uri.parse(modelClass[position].fileUri)).into(holder.ivStatus)
+       Glide.with(context).load(Uri.parse(modelClass[position].fileUri)).into(holder.ivStatus)
 
         Log.d("hanuu", modelClass[position].fileUri)
 

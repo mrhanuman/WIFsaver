@@ -31,7 +31,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="start"
                 android:layout_margin="6dp"
-                app:cardBackgroundColor="#00404040"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="40dp">
 
                 <ImageView
@@ -39,10 +39,9 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:padding="4dp"
                     android:scaleType="centerCrop"
                     android:visibility="visible"
-                    app:tint="@color/teal_200"
+                    app:tint="@color/black"
                     android:src="@drawable/video"/>
 
 
@@ -54,7 +53,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="6dp"
-                app:cardBackgroundColor="#00404040"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="40dp">
 
                 <ImageView
@@ -62,11 +61,9 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:padding="4dp"
                     android:scaleType="centerCrop"
                     android:visibility="visible"
-                    app:tint="@color/teal_200"
-                    android:src="@android:drawable/stat_sys_download"/>
+                    android:src="@drawable/download"/>
 
 
             </androidx.cardview.widget.CardView>

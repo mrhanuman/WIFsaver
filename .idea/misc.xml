@@ -4,15 +4,21 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/circle.xml" value="0.3375" />
+        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/download.xml" value="0.338" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3375" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/ic_share_black_24dp.xml" value="0.3375" />
+        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/play.xml" value="0.338" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/rectangle.xml" value="0.25" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/rectangle_trade_small_green.xml" value="0.3375" />
+        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/share.xml" value="0.338" />
+        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/drawable/video.xml" value="0.338" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/layout/activity_full_view_item.xml" value="0.3625" />
-        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/layout/activity_main.xml" value="0.3569230769230769" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/layout/custom_dialog_box.xml" value="0.3625" />
+        <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/layout/status_list.xml" value="0.3625" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/layout/statuslist.xml" value="0.3625" />
         <entry key="..\:/Users/MR. SHARVAN/AndroidStudioProjects/WIFsaver/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1935" />
+        <entry key="..\:/Users/MR. SHARVAN/AppData/Local/Android/Sdk/platforms/android-32/data/res/drawable/stat_sys_download.xml" value="0.338" />
       </map>
     </option>
   </component>
