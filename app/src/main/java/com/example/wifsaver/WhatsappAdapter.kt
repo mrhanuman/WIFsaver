@@ -2,7 +2,6 @@ package com.example.wifsaver
 
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -46,8 +45,6 @@ class WhatsAppAdapter(private val context: Context, private var modelClass: Arra
             holder.ivVideoIcon.visibility = View.GONE
         }
        Glide.with(context).load(Uri.parse(modelClass[position].fileUri)).into(holder.ivStatus)
-
-        Log.d("hanuu", modelClass[position].fileUri)
 
         holder.ivDownload.setOnClickListener{
                 clickListener(modelClass[position])

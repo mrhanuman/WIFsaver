@@ -10,7 +10,8 @@
         android:layout_height="160dp"
         android:layout_centerInParent="true"
         app:cardBackgroundColor="#037EB5"
-        app:cardCornerRadius="5dp">
+        app:cardElevation="5dp"
+        app:cardCornerRadius="20dp">
 
         <TextView
             android:id="@+id/textView"

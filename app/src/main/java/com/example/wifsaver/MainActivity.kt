@@ -5,16 +5,16 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Environment
+import android.os.*
 import android.os.storage.StorageManager
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +24,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var rvStatusList: RecyclerView
@@ -42,37 +43,7 @@ class MainActivity : AppCompatActivity() {
         statusList = ArrayList()
         swipeRefreshLayout = findViewById(R.id.container)
 
-        swipeRefreshLayout.setOnRefreshListener {
-
-            swipeRefreshLayout.isRefreshing = true
-
-            val sh = getSharedPreferences("DATA_PATH", MODE_PRIVATE)
-            val uriPath = sh.getString("PATH", "")
-
-            contentResolver.takePersistableUriPermission(
-                Uri.parse(uriPath),
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-
-            if (uriPath != null) {
-                val docFile = DocumentFile.fromTreeUri(applicationContext, Uri.parse(uriPath))
-                statusList.clear()
-                for (file: DocumentFile in docFile!!.listFiles()) {
-
-                    if (!file.name!!.endsWith(".nomedia")) {
-                        val modelClass = WhatsAppModel(file.name!!, file.uri.toString())
-                        statusList.add(modelClass)
-
-                    }
-                }
-                setupRecyclerView(statusList)
-            }
-            swipeRefreshLayout.isRefreshing = false
-            Toast.makeText(this, "status updated ", Toast.LENGTH_SHORT).show()
-
-
-
-        }
+        swipeRefresh()
 
 
         val result = readDataFromPrefs()
@@ -102,7 +73,47 @@ class MainActivity : AppCompatActivity() {
         } else {
             getFolderPermission()
         }
+
     }
+
+
+
+    private fun swipeRefresh(){
+        swipeRefreshLayout.setOnRefreshListener {
+
+            swipeRefreshLayout.isRefreshing = true
+
+            val sh = getSharedPreferences("DATA_PATH", MODE_PRIVATE)
+            val uriPath = sh.getString("PATH", "")
+
+            contentResolver.takePersistableUriPermission(
+                Uri.parse(uriPath),
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+
+            if (uriPath != null) {
+                val docFile = DocumentFile.fromTreeUri(applicationContext, Uri.parse(uriPath))
+                statusList.clear()
+                for (file: DocumentFile in docFile!!.listFiles()) {
+
+                    if (!file.name!!.endsWith(".nomedia")) {
+                        val modelClass = WhatsAppModel(file.name!!, file.uri.toString())
+                        statusList.add(modelClass)
+
+                    }
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    setupRecyclerView(statusList)
+                }
+            }
+            swipeRefreshLayout.isRefreshing = false
+            Toast.makeText(this, "status updated ", Toast.LENGTH_SHORT).show()
+
+
+        }
+
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun getFolderPermission() {
@@ -189,6 +200,7 @@ class MainActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.custom_dialog_box)
         val btDownload = dialog.findViewById<Button>(R.id.bt_download)
         dialog.show()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         btDownload.setOnClickListener {
             dialog.dismiss()
             saveFile(status)
@@ -260,5 +272,19 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    var doubleBackToExitPressedOnce = false
+
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+        doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 }

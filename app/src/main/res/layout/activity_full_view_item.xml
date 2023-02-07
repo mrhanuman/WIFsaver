@@ -8,15 +8,17 @@
     tools:context=".FullViewItem">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
         <ImageView
             android:id="@+id/imageView"
+            android:layout_margin="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
+            android:layout_centerInParent="true"
             android:visibility="visible"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -30,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
         </FrameLayout>
 
         <FrameLayout
@@ -43,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 app:cardCornerRadius="50dp"
+                android:backgroundTint="@color/black"
                 android:layout_margin="8dp">
 
             <ImageView
@@ -50,7 +53,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                app:tint="@color/black"
                 android:src="@drawable/download"/>
             </androidx.cardview.widget.CardView>
 
@@ -59,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 app:cardCornerRadius="50dp"
+                android:backgroundTint="@color/black"
                 android:layout_margin="8dp">
 
 
