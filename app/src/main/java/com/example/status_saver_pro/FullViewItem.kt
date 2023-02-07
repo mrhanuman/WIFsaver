@@ -1,4 +1,4 @@
-package com.example.wifsaver
+package com.example.status_saver_pro
 
 import android.app.Dialog
 import android.content.ContentValues
@@ -7,17 +7,14 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
@@ -66,34 +63,26 @@ class FullViewItem : AppCompatActivity() {
                         MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(uri))
                     val fileName = "${System.currentTimeMillis()}.jpg"
                     var fos: OutputStream?
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        contentResolver.also { resolver ->
-                            val contentValues = ContentValues().apply {
-                                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                                put(
-                                    MediaStore.MediaColumns.RELATIVE_PATH,
-                                    Environment.DIRECTORY_PICTURES
-                                )
-                            }
-                            val imageUri: Uri? =
-                                resolver.insert(
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                    contentValues
-                                )
-                            fos = imageUri?.let {
-                                resolver.openOutputStream(it)
-                            }
-
+                    contentResolver.also { resolver ->
+                        val contentValues = ContentValues().apply {
+                            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                            put(
+                                MediaStore.MediaColumns.RELATIVE_PATH,
+                                Environment.DIRECTORY_PICTURES
+                            )
+                        }
+                        val imageUri: Uri? =
+                            resolver.insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                contentValues
+                            )
+                        fos = imageUri?.let {
+                            resolver.openOutputStream(it)
                         }
 
-
-                    } else {
-                        val imageDir =
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                        val image = File(imageDir, fileName)
-                        fos = FileOutputStream(image)
                     }
+
 
                     fos?.use {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
@@ -117,9 +106,11 @@ class FullViewItem : AppCompatActivity() {
             mediaController.setAnchorView(videoView)
             videoView.start()
             videoView.setOnCompletionListener {
-//                val intent = Intent(this, MainActivity::class.java)
-//                startActivity(intent)
-                this.finish()
+                videoView.start()
+                videoView.setOnCompletionListener {
+                    this.finish()
+                }
+
 
             }
 

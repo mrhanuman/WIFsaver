@@ -31,7 +31,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@android:color/transparent"
+                android:backgroundTint="#70000000"
                 app:cardCornerRadius="40dp">
 
                 <ImageView

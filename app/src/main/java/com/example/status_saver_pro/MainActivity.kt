@@ -1,4 +1,4 @@
-package com.example.wifsaver
+package com.example.status_saver_pro
 
 import android.app.Dialog
 import android.content.ContentValues
@@ -8,20 +8,23 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.os.storage.StorageManager
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusAdapter: WhatsAppAdapter
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -102,9 +104,7 @@ class MainActivity : AppCompatActivity() {
 
                     }
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    setupRecyclerView(statusList)
-                }
+                setupRecyclerView(statusList)
             }
             swipeRefreshLayout.isRefreshing = false
             Toast.makeText(this, "status updated ", Toast.LENGTH_SHORT).show()
@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun getFolderPermission() {
         val storageManager = application.getSystemService(Context.STORAGE_SERVICE) as StorageManager
         val intent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
@@ -144,7 +143,6 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -176,7 +174,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setupRecyclerView(statusList: java.util.ArrayList<WhatsAppModel>) {
         statusAdapter = applicationContext?.let {
             WhatsAppAdapter(it, statusList)
@@ -192,7 +189,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun listItemClicked(status: WhatsAppModel) {
 
 
@@ -208,7 +204,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun saveFile(status: WhatsAppModel) {
         if (status.fileUri.endsWith(".mp4")) {
             val inputStream = contentResolver.openInputStream(Uri.parse(status.fileUri))
@@ -241,28 +236,20 @@ class MainActivity : AppCompatActivity() {
                 MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(status.fileUri))
             val fileName = "${System.currentTimeMillis()}.jpg"
             var fos: OutputStream?
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                contentResolver.also { resolver ->
-                    val contentValues = ContentValues().apply {
-                        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                    }
-                    val imageUri: Uri? =
-                        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                    fos = imageUri?.let {
-                        resolver.openOutputStream(it)
-                    }
-
+            contentResolver.also { resolver ->
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
+                val imageUri: Uri? =
+                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                fos = imageUri?.let {
+                    resolver.openOutputStream(it)
                 }
 
-
-            } else {
-                val imageDir =
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                val image = File(imageDir, fileName)
-                fos = FileOutputStream(image)
             }
+
 
             fos?.use {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
@@ -274,17 +261,50 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    var doubleBackToExitPressedOnce = false
+private fun dialogCall (message :String,btText:String){
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.custom_dialog_box)
+        val button = dialog.findViewById<Button>(R.id.bt_download)
+        val textView = dialog.findViewById<TextView>(R.id.textView)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        button.text = btText
+        textView.text = message
+        dialog.show()
+        button.setOnClickListener {
+            dialog.dismiss()
+            this.finish()
+        }
+
+    }
+
+    private var doubleBackToExitPressedOnce = false
 
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            super.onBackPressed()
-            return
+            dialogCall("To close the App Click exit","exit")
+//            super.onBackPressed()
+//            return
         }
         doubleBackToExitPressedOnce = true
         Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
             doubleBackToExitPressedOnce = false
         }, 2000)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu,menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.exit -> dialogCall("To close the App Click exit","exit")
+            R.id.rate_us -> {dialogCall("Rate Us On Play Store","PlayStore")
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

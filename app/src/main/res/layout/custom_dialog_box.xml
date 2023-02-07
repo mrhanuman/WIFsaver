@@ -6,11 +6,12 @@
 
 
     <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
-        android:layout_height="160dp"
+        android:layout_width="350dp"
+        android:layout_height="180dp"
         android:layout_centerInParent="true"
-        app:cardBackgroundColor="#037EB5"
+        app:cardBackgroundColor="#40C4FF"
         app:cardElevation="5dp"
+        android:background="@android:color/transparent"
         app:cardCornerRadius="20dp">
 
         <TextView
@@ -20,10 +21,11 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:padding="16dp"
+            android:paddingTop="16dp"
             android:text="click download to save in gallery"
-            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -33,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_margin="8dp"
+            android:layout_marginBottom="16dp"
             android:text="download" />
 
     </androidx.cardview.widget.CardView>

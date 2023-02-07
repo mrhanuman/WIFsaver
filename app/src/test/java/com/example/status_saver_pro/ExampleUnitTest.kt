@@ -1,4 +1,4 @@
-package com.example.wifsaver
+package com.example.status_saver_pro
 
 import org.junit.Test
 

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:id="@+id/container"
     android:orientation="vertical"
-    android:background="@drawable/img"
     tools:context=".MainActivity">
 
 
@@ -15,6 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/appbar_scrolling_view_behavior"
-        android:padding="8dp"
+        android:padding="4dp"
         tools:listitem="@layout/statuslist" />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
