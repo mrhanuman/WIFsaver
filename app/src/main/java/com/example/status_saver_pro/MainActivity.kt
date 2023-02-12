@@ -25,11 +25,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.status_saver_pro.ads.Admob
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import java.io.IOException
 import java.io.OutputStream
 
 
 class MainActivity : AppCompatActivity() {
+    private var adView: AdView? = null
     private lateinit var rvStatusList: RecyclerView
     private lateinit var statusList: ArrayList<WhatsAppModel>
     private lateinit var statusAdapter: WhatsAppAdapter
@@ -39,6 +45,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Admob().setBanner(findViewById(R.id.main_activity_banner),this@MainActivity)
+        MobileAds.initialize(this){
+            RequestConfiguration.Builder().build()
+        }
+        adView = findViewById(R.id.banner_ad)
+        val adRequest = AdRequest.Builder().build()
+        adView?.loadAd(adRequest)
 
         supportActionBar!!.title = "All Status"
         rvStatusList = findViewById(R.id.recycler_view)
@@ -79,8 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    private fun swipeRefresh(){
+    private fun swipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
 
             swipeRefreshLayout.isRefreshing = true
@@ -261,7 +273,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-private fun dialogCall (message :String,btText:String){
+    private fun dialogCall(message: String, btText: String) {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.custom_dialog_box)
         val button = dialog.findViewById<Button>(R.id.bt_download)
@@ -281,7 +293,7 @@ private fun dialogCall (message :String,btText:String){
 
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            dialogCall("To close the App Click exit","exit")
+            dialogCall("To close the App Click exit", "exit")
 //            super.onBackPressed()
 //            return
         }
@@ -294,15 +306,16 @@ private fun dialogCall (message :String,btText:String){
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu,menu)
+        menuInflater.inflate(R.menu.menu, menu)
 
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.exit -> dialogCall("To close the App Click exit","exit")
-            R.id.rate_us -> {dialogCall("Rate Us On Play Store","PlayStore")
+        when (item.itemId) {
+            R.id.exit -> dialogCall("To close the App Click exit", "exit")
+            R.id.rate_us -> {
+                dialogCall("Rate Us On Play Store", "PlayStore")
             }
         }
         return super.onOptionsItemSelected(item)

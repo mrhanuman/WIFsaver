@@ -15,10 +15,17 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.status_saver_pro.ads.Admob
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import java.io.IOException
 import java.io.OutputStream
 
 class FullViewItem : AppCompatActivity() {
+
+    private var adView: AdView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +35,14 @@ class FullViewItem : AppCompatActivity() {
         val videoView = findViewById<VideoView>(R.id.videoView)
         val btShare = findViewById<ImageView>(R.id.bt_share)
         val btDownload = findViewById<ImageView>(R.id.bt_download_full)
+
+        MobileAds.initialize(this){
+            RequestConfiguration.Builder().build()
+
+        }
+        adView = findViewById(R.id.fullView_banner_ad)
+        val adRequest = AdRequest.Builder().build()
+        adView?.loadAd(adRequest)
 
 
         val uri = intent.getStringExtra("uri")
@@ -53,6 +68,12 @@ class FullViewItem : AppCompatActivity() {
                 val dialog = Dialog(this@FullViewItem)
                 dialog.setContentView(R.layout.custom_dialog_box)
                 val btDownloadImage = dialog.findViewById<Button>(R.id.bt_download)
+                MobileAds.initialize(this){
+                    RequestConfiguration.Builder().build()
+                }
+                adView = dialog.findViewById(R.id.dialog_banner_ad)
+                val adRequestDialog = AdRequest.Builder().build()
+                adView?.loadAd(adRequestDialog)
                 dialog.show()
                 dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 btDownloadImage.setOnClickListener {
