@@ -6,7 +6,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -20,6 +22,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 
@@ -36,13 +39,7 @@ class FullViewItem : AppCompatActivity() {
         val btShare = findViewById<ImageView>(R.id.bt_share)
         val btDownload = findViewById<ImageView>(R.id.bt_download_full)
 
-        MobileAds.initialize(this){
-            RequestConfiguration.Builder().build()
-
-        }
-        adView = findViewById(R.id.fullView_banner_ad)
-        val adRequest = AdRequest.Builder().build()
-        adView?.loadAd(adRequest)
+        Admob().setBanner(findViewById(R.id.fullView_banner_ad), this@FullViewItem)
 
 
         val uri = intent.getStringExtra("uri")
@@ -71,46 +68,46 @@ class FullViewItem : AppCompatActivity() {
                 MobileAds.initialize(this){
                     RequestConfiguration.Builder().build()
                 }
-                adView = dialog.findViewById(R.id.dialog_banner_ad)
-                val adRequestDialog = AdRequest.Builder().build()
-                adView?.loadAd(adRequestDialog)
+//                adView = dialog.findViewById(R.id.dialog_banner_ad)
+//                val adRequestDialog = AdRequest.Builder().build()
+//                adView?.loadAd(adRequestDialog)
                 dialog.show()
                 dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 btDownloadImage.setOnClickListener {
                     dialog.dismiss()
+                    saveFile()
 
 
-                    val bitmap =
-                        MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(uri))
-                    val fileName = "${System.currentTimeMillis()}.jpg"
-                    var fos: OutputStream?
-                    contentResolver.also { resolver ->
-                        val contentValues = ContentValues().apply {
-                            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                            put(
-                                MediaStore.MediaColumns.RELATIVE_PATH,
-                                Environment.DIRECTORY_PICTURES
-                            )
-                        }
-                        val imageUri: Uri? =
-                            resolver.insert(
-                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                contentValues
-                            )
-                        fos = imageUri?.let {
-                            resolver.openOutputStream(it)
-                        }
-
-                    }
-
-
-                    fos?.use {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
-                        Toast.makeText(applicationContext, "image saved !", Toast.LENGTH_SHORT)
-                            .show()
-
-                    }
+//                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(uri))
+//                    val fileName = "${System.currentTimeMillis()}.jpg"
+//                    var fos: OutputStream?
+//                    contentResolver.also { resolver ->
+//                        val contentValues = ContentValues().apply {
+//                            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+//                            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+//                            put(
+//                                MediaStore.MediaColumns.RELATIVE_PATH,
+//                                Environment.DIRECTORY_PICTURES
+//                            )
+//                        }
+//                        val imageUri: Uri? =
+//                            resolver.insert(
+//                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                                contentValues
+//                            )
+//                        fos = imageUri?.let {
+//                            resolver.openOutputStream(it)
+//                        }
+//
+//                    }
+//
+//
+//                    fos?.use {
+//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+//                        Toast.makeText(applicationContext, "image saved !", Toast.LENGTH_SHORT)
+//                            .show()
+//
+//                    }
                 }
             }
 
@@ -153,44 +150,194 @@ class FullViewItem : AppCompatActivity() {
                 btDownloadDialog.setOnClickListener {
 
                     dialog.dismiss()
-                    val inputStream = contentResolver.openInputStream(Uri.parse(uri))
-                    val fileName = "${System.currentTimeMillis()}.mp4"
-
-                    try {
-                        val value = ContentValues()
-                        value.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                        value.put(MediaStore.MediaColumns.MIME_TYPE, "videos/mp4")
-                        value.put(
-                            MediaStore.MediaColumns.RELATIVE_PATH,
-                            Environment.DIRECTORY_DOCUMENTS + "/videos/"
-                        )
-
-                        val uri =
-                            contentResolver.insert(
-                                MediaStore.Files.getContentUri("external"),
-                                value
-                            )
-                        val outputStream: OutputStream =
-                            uri?.let { contentResolver.openOutputStream(it) }!!
-                        if (inputStream != null) {
-                            outputStream.write(inputStream.readBytes())
-                        }
-                        outputStream.close()
-                        Toast.makeText(applicationContext, "saved !", Toast.LENGTH_SHORT).show()
-                    } catch (e: IOException) {
-                        Toast.makeText(
-                            applicationContext,
-                            "something went wrong !",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
+                    saveFile()
+//                    val inputStream = contentResolver.openInputStream(Uri.parse(uri))
+//                    val fileName = "${System.currentTimeMillis()}.mp4"
+//
+//                    try {
+//                        val value = ContentValues()
+//                        value.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+//                        value.put(MediaStore.MediaColumns.MIME_TYPE, "videos/mp4")
+//                        value.put(
+//                            MediaStore.MediaColumns.RELATIVE_PATH,
+//                            Environment.DIRECTORY_DOCUMENTS + "/videos/"
+//                        )
+//
+//                        val uri =
+//                            contentResolver.insert(
+//                                MediaStore.Files.getContentUri("external"),
+//                                value
+//                            )
+//                        val outputStream: OutputStream =
+//                            uri?.let { contentResolver.openOutputStream(it) }!!
+//                        if (inputStream != null) {
+//                            outputStream.write(inputStream.readBytes())
+//                        }
+//                        outputStream.close()
+//                        Toast.makeText(applicationContext, "saved !", Toast.LENGTH_SHORT).show()
+//                    } catch (e: IOException) {
+//                        Toast.makeText(
+//                            applicationContext,
+//                            "something went wrong !",
+//                            Toast.LENGTH_SHORT
+//                        )
+//                            .show()
+//                    }
                 }
             }
 
         }
 
 
+    }
+
+    private fun saveFile() {
+        val uri = intent.getStringExtra("uri")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (uri?.endsWith(".mp4") == true) {
+                val inputStream = contentResolver.openInputStream(Uri.parse(uri))
+                val fileName = "${System.currentTimeMillis()}.mp4"
+
+                try {
+                    val value = ContentValues()
+                    value.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                    value.put(MediaStore.MediaColumns.MIME_TYPE, "videos/mp4")
+                    value.put(
+                        MediaStore.MediaColumns.RELATIVE_PATH,
+                        Environment.DIRECTORY_DOCUMENTS + "/videos/"
+                    )
+
+                    val uri =
+                        contentResolver.insert(MediaStore.Files.getContentUri("external"), value)
+                    val outputStream: OutputStream =
+                        uri?.let { contentResolver.openOutputStream(it) }!!
+                    if (inputStream != null) {
+                        outputStream.write(inputStream.readBytes())
+                    }
+                    outputStream.close()
+                    Toast.makeText(applicationContext, "saved !", Toast.LENGTH_SHORT).show()
+                } catch (e: IOException) {
+                    Toast.makeText(applicationContext, "something went wrong !", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+            else {
+                val bitmap =
+                    MediaStore.Images.Media.getBitmap(
+                        this.contentResolver,
+                        Uri.parse(uri)
+                    )
+                val fileName = "${System.currentTimeMillis()}.jpg"
+                var fos: OutputStream?
+                contentResolver.also { resolver ->
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                    }
+                    val imageUri: Uri? =
+                        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                    fos = imageUri?.let {
+                        resolver.openOutputStream(it)
+                    }
+
+                }
+
+
+                fos?.use {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                    Toast.makeText(applicationContext, "image saved !", Toast.LENGTH_SHORT).show()
+
+                }
+            }
+        }
+        else if (uri?.endsWith(".mp4") == true) {
+            try {
+                createFilesFolder()
+                val saveFilePath =
+                    "${Environment.getExternalStorageDirectory()}/Documents/StatusSaver"
+                val path: String = uri
+                val fileName = path.substring(path.lastIndexOf("//") + 1)
+                val file = File(path)
+                val destFile = File(saveFilePath)
+                try {
+                    org.apache.commons.io.FileUtils.copyFileToDirectory(file, destFile)
+
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+                val fileNameChange = "status_saver ${System.currentTimeMillis()}.mp4"
+                val newFile = File(saveFilePath + fileNameChange)
+                val contentType = "video/*"
+                MediaScannerConnection.scanFile(applicationContext, arrayOf(newFile.absolutePath),
+                    arrayOf(contentType), object :
+                        MediaScannerConnection.MediaScannerConnectionClient {
+                        override fun onScanCompleted(p0: String?, p1: Uri?) {
+
+                        }
+
+                        override fun onMediaScannerConnected() {
+
+                        }
+                    }
+                )
+                val from = File(saveFilePath, fileName)
+                val to = File(saveFilePath, fileNameChange)
+                from.renameTo(to).apply {
+                    Toast.makeText(applicationContext, "video saved", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: java.lang.Exception) {
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            try {
+                createFilesFolder()
+                val saveFilePath =
+                    "${Environment.getExternalStorageDirectory()}/Documents/StatusSaver"
+                val path: String? = uri
+                val fileName = path?.substring(path.lastIndexOf("//") + 1)
+                val file = File(path)
+                val destFile = File(saveFilePath)
+                try {
+                    org.apache.commons.io.FileUtils.copyFileToDirectory(file, destFile)
+
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+                val fileNameChange = "status_saver ${System.currentTimeMillis()}.jpg"
+                val newFile = File(saveFilePath + fileNameChange)
+                val contentType = "image/*"
+                MediaScannerConnection.scanFile(applicationContext, arrayOf(newFile.absolutePath),
+                    arrayOf(contentType), object :
+                        MediaScannerConnection.MediaScannerConnectionClient {
+                        override fun onScanCompleted(p0: String?, p1: Uri?) {
+
+                        }
+
+                        override fun onMediaScannerConnected() {
+
+                        }
+                    }
+                )
+                val from = File(saveFilePath, fileName)
+                val to = File(saveFilePath, fileNameChange)
+                from.renameTo(to).apply {
+                    Toast.makeText(applicationContext, "image saved", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: java.lang.Exception) {
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+    }
+
+    private fun createFilesFolder() {
+        if (!File("${Environment.getExternalStorageDirectory()}/Documents/StatusSaver/").exists()) {
+            File("${Environment.getExternalStorageDirectory()}/Documents/StatusSaver/").mkdir()
+        }
     }
 
 

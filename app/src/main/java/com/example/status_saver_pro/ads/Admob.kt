@@ -2,22 +2,22 @@ package com.example.status_saver_pro.ads
 
 import android.content.Context
 import android.widget.LinearLayout
-import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.AdSize.BANNER
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 
 class Admob {
 
 
+
     fun setBanner(banner: LinearLayout, context: Context) {
         if (AdUnit().isAd) {
-            MobileAds.initialize(context, OnInitializationCompleteListener {
-
-            })
+            MobileAds.initialize(context){
+                RequestConfiguration.Builder().build()
+            }
             val adView = AdView(context)
+            banner.addView(adView)
             adView.adUnitId = AdUnit().bannerAd
+
 
             adView.setAdSize(BANNER)
 
@@ -25,8 +25,8 @@ class Admob {
 
 
             adView.loadAd(adRequest)
-
         }
+
 
     }
 }

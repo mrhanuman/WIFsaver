@@ -2,7 +2,6 @@ package com.example.status_saver_pro
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +42,7 @@ class WhatsAppAdapter(private val context: Context, private var modelClass: Arra
             holder.cvVideoCard.visibility = View.GONE
             holder.ivVideoIcon.visibility = View.GONE
         }
-       Glide.with(context).load(Uri.parse(modelClass[position].fileUri)).into(holder.ivStatus)
+       Glide.with(context).load((modelClass[position].fileUri)).into(holder.ivStatus)
 
         holder.ivDownload.setOnClickListener{
                 clickListener(modelClass[position])
